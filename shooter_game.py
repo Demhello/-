@@ -53,7 +53,7 @@ def shop1():
         textc = font1.render(txtc,1,(255,0,0))
         txtsh ="Магазин"
         textsh = font2.render(txtsh,1,(255,0,0))
-        pkup = "Купить 10 патронов(5 монет)"
+        pkup = "Купить 10 патронов(3 монет)"
         pkuptext = font1.render(pkup,1,(255,0,0))
         pkup1 = "купить 1 аптечку по 10 жизней(5 монет)"
         pkuptext1 = font1.render(pkup1,1,(255,0,0))
@@ -70,9 +70,9 @@ def shop1():
             elif e.type == MOUSEBUTTONDOWN:
                 x, y = e.pos
                 if button1.rect.collidepoint(x, y):
-                    if cocoin >= 5:
+                    if cocoin >= 3:
                         patron += 10
-                        cocoin -= 5
+                        cocoin -= 3
                 if button2.rect.collidepoint(x, y):
                     if cocoin >= 5:
                         ap1 += 1
@@ -184,7 +184,7 @@ class evil(obekt):
             self.rect.y = -100
             self.rect.x = randint(0,900)
             if yr == 1:
-                    self.speed = randint(5,10)
+                self.speed = randint(5,10)
             if yr == 2:
                 self.speed = randint(6,10)
             if yr == 3:
@@ -211,11 +211,14 @@ ino6 = evil("ufo.png", 550,180, 5)
 tnt = evil("tnt.png", 50,180,5)
 hello = evil("hello.png", 0,180,5)
 coin = evil("coin.png", randint(100,600),180,5)
+aster = evil("asteroid.png", randint(100,600),180,4)
+aster2 = evil("asteroid.png", randint(100,600),180,4)
 
 inoplan = [ino,ino2,ino3,ino4,ino5,ino6]
 bonus = [coin,hello,tnt]
+asteroids = [aster,aster2]
 def obrat():
-    global b,n,h,patron,inoplan,game,font1,cocoin,bul,shop,endgame,ap1,ap2,o,yr
+    global b,n,h,patron,inoplan,game,font1,cocoin,bul,shop,endgame,ap1,ap2,o,yr,aster,asteroids
     while game:
         scr.blit(back,(0,0))
         txt = "Здоровье "+str(h)
@@ -230,6 +233,9 @@ def obrat():
         cola1text = font1.render(cola1txt,1,(255,0,0))
         cola2txt = "Количество аптечек по 50 жизней "+str(ap2)+"(нажмите r)"
         cola2text = font1.render(cola2txt,1,(255,0,0))
+        yrotxt = "уровень "+str(yr)
+        yrotext = font1.render(yrotxt,1,(255,0,0))
+        scr.blit(yrotext, (10,140))
         scr.blit(cola2text, (10,120))
         scr.blit(cola1text, (10,100))
         scr.blit(text, (10,20))
@@ -263,6 +269,10 @@ def obrat():
         bul.fire()
         coin.reset()
         coin.update()
+        aster.reset()
+        aster.update()
+        aster2.reset()
+        aster2.update()  
         keys_pressed = key.get_pressed()
         if keys_pressed[K_s]:
             game = False
@@ -296,7 +306,49 @@ def obrat():
                     q.speed = 10
                 b = 1
                 o += 1
-                
+
+        for q in asteroids:
+            if sprite.collide_rect(q, bul):
+                bul.rect.y = -1000
+                if q.speed >= 4:
+                    q.speed -= 1
+        
+        for q in asteroids:
+            if sprite.collide_rect(q, rocket):
+                q.rect.x = randint(0,900)
+                q.rect.y = -100
+                h -= 10
+                if yr == 1:
+                    q.speed = randint(3,7)
+                if yr == 2:
+                    q.speed = randint(4,7)
+                if yr == 3:
+                    q.speed = randint(5,7)
+                if yr == 4:
+                    q.speed = randint(6,8)
+                if yr == 5:
+                    q.speed = randint(7,8)
+                if yr == 6:
+                    q.speed = 8
+            
+        for q in asteroids:
+            for r in inoplan:
+                if sprite.collide_rect(r,q):
+                    r.rect.x = randint(0,900)
+                    r.rect.y = -100
+                    if yr == 1:
+                        r.speed = randint(5,10)
+                    if yr == 2:
+                        r.speed = randint(6,10)
+                    if yr == 3:
+                        r.speed = randint(7,10)
+                    if yr == 4:
+                        r.speed = randint(8,10)
+                    if yr == 5:
+                        r.speed = randint(9,10)
+                    if yr == 6:
+                        r.speed = 10
+                        
         for q in inoplan:
             if sprite.collide_rect(rocket,q):
                 h -= 10
@@ -306,6 +358,7 @@ def obrat():
             if sprite.collide_rect(coin,q):
                 q.rect.x = randint(0,900)
                 q.rect.y = -100
+        
         if sprite.collide_rect(ino, ino2):
             ino2.rect.y = -100
             ino2.rect.x = randint(0,900)
